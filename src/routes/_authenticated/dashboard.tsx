@@ -8,6 +8,8 @@ import { useShell } from "@/components/app-shell";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Overview — SaleUp" },
       { name: "description", content: "Today's leads, follow-ups and sales activity at a glance." },
       { property: "og:title", content: "Overview — SaleUp" },
