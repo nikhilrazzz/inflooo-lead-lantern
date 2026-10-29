@@ -14,4 +14,5 @@
 - [x] Remove required Google Calendar connection; move controls to Settings.
 - [x] Preserve original calendar and upgrade existing alarms to corner pop-ups across pages.
 - [x] Add notification preferences and supported closed-app push delivery.
-- [ ] Verify settings, dismissal, navigation, deduplication, and notification delivery.
+- [x] Verify original calendar access, saved settings, real due-call pop-ups across navigation, open-lead action, persistent dismissal, deduplication tests, and callback authorization.
+- [ ] Verify closed-app push on a supported published browser (sandbox browser rejected push subscription; requires publishing these changes and enabling notifications).
