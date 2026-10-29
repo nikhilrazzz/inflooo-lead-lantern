@@ -16,6 +16,7 @@ import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
 import { Route as AuthenticatedRevenueRouteImport } from './routes/_authenticated/revenue'
+import { Route as ApiPublicJobsCallNotificationsRouteImport } from './routes/api/public/jobs/call-notifications'
 import { Route as ApiPublicOauthGoogleCalendarReturnRouteImport } from './routes/api/public/oauth/google-calendar/return'
 
 const IndexRoute = IndexRouteImport.update({
@@ -52,6 +53,12 @@ const AuthenticatedRevenueRoute = AuthenticatedRevenueRouteImport.update({
   path: '/revenue',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicJobsCallNotificationsRoute =
+  ApiPublicJobsCallNotificationsRouteImport.update({
+    id: '/api/public/jobs/call-notifications',
+    path: '/api/public/jobs/call-notifications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicOauthGoogleCalendarReturnRoute =
   ApiPublicOauthGoogleCalendarReturnRouteImport.update({
     id: '/api/public/oauth/google-calendar/return',
@@ -66,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/revenue': typeof AuthenticatedRevenueRoute
+  '/api/public/jobs/call-notifications': typeof ApiPublicJobsCallNotificationsRoute
   '/api/public/oauth/google-calendar/return': typeof ApiPublicOauthGoogleCalendarReturnRoute
 }
 export interface FileRoutesByTo {
@@ -75,6 +83,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/revenue': typeof AuthenticatedRevenueRoute
+  '/api/public/jobs/call-notifications': typeof ApiPublicJobsCallNotificationsRoute
   '/api/public/oauth/google-calendar/return': typeof ApiPublicOauthGoogleCalendarReturnRoute
 }
 export interface FileRoutesById {
@@ -86,6 +95,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
   '/_authenticated/revenue': typeof AuthenticatedRevenueRoute
+  '/api/public/jobs/call-notifications': typeof ApiPublicJobsCallNotificationsRoute
   '/api/public/oauth/google-calendar/return': typeof ApiPublicOauthGoogleCalendarReturnRoute
 }
 export interface FileRouteTypes {
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/reminders'
     | '/revenue'
+    | '/api/public/jobs/call-notifications'
     | '/api/public/oauth/google-calendar/return'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/reminders'
     | '/revenue'
+    | '/api/public/jobs/call-notifications'
     | '/api/public/oauth/google-calendar/return'
   id:
     | '__root__'
@@ -116,6 +128,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/reminders'
     | '/_authenticated/revenue'
+    | '/api/public/jobs/call-notifications'
     | '/api/public/oauth/google-calendar/return'
   fileRoutesById: FileRoutesById
 }
@@ -123,6 +136,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiPublicJobsCallNotificationsRoute: typeof ApiPublicJobsCallNotificationsRoute
   ApiPublicOauthGoogleCalendarReturnRoute: typeof ApiPublicOauthGoogleCalendarReturnRoute
 }
 
@@ -177,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRevenueRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/jobs/call-notifications': {
+      id: '/api/public/jobs/call-notifications'
+      path: '/api/public/jobs/call-notifications'
+      fullPath: '/api/public/jobs/call-notifications'
+      preLoaderRoute: typeof ApiPublicJobsCallNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/oauth/google-calendar/return': {
       id: '/api/public/oauth/google-calendar/return'
       path: '/api/public/oauth/google-calendar/return'
@@ -208,6 +229,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiPublicJobsCallNotificationsRoute: ApiPublicJobsCallNotificationsRoute,
   ApiPublicOauthGoogleCalendarReturnRoute:
     ApiPublicOauthGoogleCalendarReturnRoute,
 }
