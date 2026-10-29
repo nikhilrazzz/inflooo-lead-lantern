@@ -28,6 +28,10 @@ function AuthPage() {
 
   useEffect(() => {
     if (denied) toast.error("Only @inflooo.com and @makeitviral.com accounts can access SaleUp.");
+    if (window.location.hash.includes("error=")) {
+      toast.error("Google sign-in didn't complete. Please try again with your company account.");
+      history.replaceState(null, "", window.location.pathname);
+    }
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return;
       if (isAllowedEmail(data.user.email)) navigate({ to: "/dashboard", replace: true });
