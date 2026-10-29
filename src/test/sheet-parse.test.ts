@@ -14,6 +14,6 @@ describe("sheet parsing", () => {
       ["10-20-26", "brand", "under_₹25,000", "Hyd", "A", "91", "SL-1", "New Lead"],
     ]);
     expect(rows).toHaveLength(1);
-    expect(rows[0].budget).toBe("under ₹25,000");
+    expect(rows[0]?.budget).toBe("under ₹25,000");
   });
 });

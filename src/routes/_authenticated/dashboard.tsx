@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
-function Stat({ icon: Icon, label, value, sub, tone = "primary" }: { icon: typeof Users; label: string; value: number | string; sub?: string; tone?: "primary" | "success" | "warning" | "destructive" }) {
+function Stat({ icon: Icon, label, value, sub, tone = "primary" }: { icon: typeof Users; label: string; value: number | string; sub?: string | undefined; tone?: "primary" | "success" | "warning" | "destructive" }) {
   const tones = {
     primary: "bg-primary-soft text-primary",
     success: "bg-success-soft text-success",

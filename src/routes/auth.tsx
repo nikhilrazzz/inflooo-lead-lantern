@@ -17,7 +17,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:description", content: "Sign in to SaleUp with your company Google account." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({ denied: s.denied === "1" ? "1" : undefined }),
+  validateSearch: (s: Record<string, unknown>) => ({ denied: s["denied"] === "1" ? "1" : undefined }),
   component: AuthPage,
 });
 

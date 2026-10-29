@@ -59,7 +59,7 @@ function CalendarPage() {
   };
 
   const dayLeads = (byDate.get(key(selected)) ?? []).filter((l) => filter === "all" || (filter === "done" ? isFollowedUp(l) : !isFollowedUp(l)));
-  const title = view === "month" ? format(cursor, "MMMM yyyy") : view === "week" ? `${format(days[0], "d MMM")} – ${format(days[6], "d MMM yyyy")}` : format(cursor, "EEEE, d MMM yyyy");
+  const title = view === "month" ? format(cursor, "MMMM yyyy") : view === "week" ? `${format(days[0]!, "d MMM")} – ${format(days[6]!, "d MMM yyyy")}` : format(cursor, "EEEE, d MMM yyyy");
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
