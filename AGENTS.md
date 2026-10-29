@@ -14,4 +14,4 @@
 - Company-domain access is enforced by `is_team_member()` RLS and the `_authenticated` guard (which signs non-company users out); no auth.users blocking trigger, since it breaks Google sign-in with a vendor error.
 - Brand revenue is shared through company-scoped RLS; profit is a database-generated value with a matching client calculation for unsaved previews, so edits cannot leave profit stale.
 - Personal Calendar uses authenticated server functions with encrypted per-user connector keys; provider data and credentials never enter shared caches or browser storage, to isolate each team member's calendar.
-- The app shell requires a usable personal calendar connection; it reconciles that user's SaleUp reminders with stable Google event IDs on reminder changes and while open, so retries never create duplicate calls. Google owns out-of-app notification delivery; SaleUp alarms run while the app is open.
+- Personal Google Calendar controls live in Settings and never gate SaleUp pages; optional sync reconciles the connected user's reminders with stable Google event IDs while open, preserving the original calendar for everyone.

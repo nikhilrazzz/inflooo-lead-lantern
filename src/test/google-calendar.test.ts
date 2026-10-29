@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { calendarConnectionRequired, googleEventOnDay, makeCallEvent, reminderEventId } from '@/lib/google-calendar';
 
 describe('Personal Google Calendar', () => {
-  it('requires every signed-in user to connect before continuing', () => {
-    expect(calendarConnectionRequired({ connected: false })).toBe(true);
+  it('keeps the original calendar accessible without optional Google connection', () => {
+    expect(calendarConnectionRequired({ connected: false })).toBe(false);
     expect(calendarConnectionRequired({ connected: true })).toBe(false);
-    expect(calendarConnectionRequired({ connected: true, reconnectRequired: true })).toBe(true);
+    expect(calendarConnectionRequired({ connected: true, reconnectRequired: true })).toBe(false);
   });
   it('creates stable call events with notification reminders', () => {
     const event = makeCallEvent({ id: 'abc123', remind_at: '2026-10-29T13:30:00Z', note: 'Discuss budget', leads: { full_name: 'Client', phone: '123' } });

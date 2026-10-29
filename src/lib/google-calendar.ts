@@ -6,8 +6,8 @@ export const GOOGLE_CALENDAR_SCOPES = [
 
 export type GoogleEvent = { id: string; title: string; start: string; end: string; allDay: boolean; url: string | null };
 
-export function calendarConnectionRequired(state: { connected: boolean; reconnectRequired?: boolean }) {
-  return !state.connected || state.reconnectRequired === true;
+export function calendarConnectionRequired(_state: { connected: boolean; reconnectRequired?: boolean }) {
+  return false;
 }
 
 export function reminderEventId(id: string) { return `saleup${id.replace(/-/g, '').toLowerCase()}`; }
