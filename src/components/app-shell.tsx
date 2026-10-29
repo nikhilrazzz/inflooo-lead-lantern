@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { BellRing, CalendarDays, IndianRupee, LayoutDashboard, LogOut, RefreshCw, TrendingUp } from "lucide-react";
+import { BellRing, CalendarDays, IndianRupee, LayoutDashboard, LogOut, RefreshCw, TrendingUp, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { syncLeadsFromSheet } from "@/lib/sheet-sync.functions";
 import { useLastSync, useLiveUpdates, useMe } from "@/lib/data";
@@ -105,6 +105,7 @@ export function AppShell() {
               ))}
             </nav>
             <div className="ml-auto flex items-center gap-3">
+              <Button asChild size="icon" variant="ghost"><Link to="/settings" aria-label="Settings" title="Settings"><Settings className="h-4 w-4" /></Link></Button>
               <div className="hidden text-right text-xs text-muted-foreground lg:block">
                 {lastSync ? (
                   <>Synced {formatDistanceToNow(new Date(lastSync.ran_at), { addSuffix: true })}{!lastSync.ok && " · failed"}</>
@@ -131,6 +132,7 @@ export function AppShell() {
                     <div className="text-xs font-normal text-muted-foreground">{me?.email}</div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild><Link to="/settings"><Settings className="h-4 w-4" /> Settings</Link></DropdownMenuItem>
                   <DropdownMenuItem onClick={signOut}>
                     <LogOut className="h-4 w-4" /> Sign out
                   </DropdownMenuItem>

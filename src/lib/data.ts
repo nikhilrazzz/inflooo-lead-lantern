@@ -32,6 +32,7 @@ export function useLeads() {
 export function useReminders() {
   return useQuery({
     queryKey: ["reminders"],
+    refetchInterval: 15_000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reminders")

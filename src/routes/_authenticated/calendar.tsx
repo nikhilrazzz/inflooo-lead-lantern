@@ -33,7 +33,7 @@ const key = (d: Date) => format(d, "yyyy-MM-dd");
 function CalendarPage() {
   const { data: leads = [] } = useLeads();
   const { data: reminders = [] } = useReminders();
-  const { events, setRange } = useGoogleCalendar();
+  const { events, setRange, connected } = useGoogleCalendar();
   const [view, setView] = useState<View>("month");
   const [cursor, setCursor] = useState(() => new Date());
   const [selected, setSelected] = useState(() => new Date());
@@ -131,14 +131,14 @@ function CalendarPage() {
       </section>
 
       <section className="space-y-3">
-        <div className="space-y-2 border-b pb-4">
+        {connected && <div className="space-y-2 border-b pb-4">
           <h2 className="text-sm font-bold text-success">My Google Calendar · {selectedEvents.length}</h2>
           {selectedEvents.length === 0 && <p className="text-sm text-muted-foreground">No Google events for this day.</p>}
           {selectedEvents.map(event => <div key={event.id} className="min-w-0 border-l-2 border-success py-1 pl-3">
             <div className="break-words text-sm font-semibold">{event.url ? <a href={event.url} target="_blank" rel="noreferrer" className="hover:underline">{event.title}</a> : event.title}</div>
             <p className="text-xs text-muted-foreground">{event.allDay ? 'All day' : `${format(new Date(event.start), 'h:mm a')} – ${format(new Date(event.end), 'h:mm a')}`}</p>
           </div>)}
-        </div>
+        </div>}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 className="text-lg font-bold">{format(selected, "EEEE, d MMM")}</h2>
