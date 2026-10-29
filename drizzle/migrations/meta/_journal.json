@@ -36,6 +36,13 @@
       "when": 1793279836748,
       "tag": "0004_personal_google_calendar",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793280780209,
+      "tag": "0005_notification_settings_push",
+      "breakpoints": true
     }
   ]
 }

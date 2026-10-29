@@ -231,6 +231,51 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          in_app_enabled: boolean
+          push_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          in_app_enabled?: boolean
+          push_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          in_app_enabled?: boolean
+          push_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_receipts: {
+        Row: {
+          event_key: string
+          in_app_dismissed: boolean
+          push_claimed_at: string | null
+          push_sent_at: string | null
+          user_id: string
+        }
+        Insert: {
+          event_key: string
+          in_app_dismissed?: boolean
+          push_claimed_at?: string | null
+          push_sent_at?: string | null
+          user_id: string
+        }
+        Update: {
+          event_key?: string
+          in_app_dismissed?: boolean
+          push_claimed_at?: string | null
+          push_sent_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -252,6 +297,33 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -326,6 +398,24 @@ export type Database = {
           ran_at?: string
           ran_by?: string | null
           total?: number
+        }
+        Relationships: []
+      }
+      web_push_config: {
+        Row: {
+          id: boolean
+          private_key_ciphertext: string
+          public_key: string
+        }
+        Insert: {
+          id?: boolean
+          private_key_ciphertext: string
+          public_key: string
+        }
+        Update: {
+          id?: boolean
+          private_key_ciphertext?: string
+          public_key?: string
         }
         Relationships: []
       }

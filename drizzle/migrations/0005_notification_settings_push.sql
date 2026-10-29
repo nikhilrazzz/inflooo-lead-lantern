@@ -1,0 +1,18 @@
+CREATE TABLE public.notification_preferences (user_id uuid PRIMARY KEY, in_app_enabled boolean NOT NULL DEFAULT true, push_enabled boolean NOT NULL DEFAULT false, updated_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT,INSERT,UPDATE ON public.notification_preferences TO authenticated;
+GRANT ALL ON public.notification_preferences TO service_role;
+ALTER TABLE public.notification_preferences ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "own notification settings" ON public.notification_preferences FOR ALL TO authenticated USING (public.is_team_member() AND user_id=auth.uid()) WITH CHECK (public.is_team_member() AND user_id=auth.uid());
+CREATE TABLE public.push_subscriptions (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid NOT NULL, endpoint text NOT NULL UNIQUE, p256dh text NOT NULL, auth text NOT NULL, created_at timestamptz NOT NULL DEFAULT now());
+GRANT ALL ON public.push_subscriptions TO service_role;
+REVOKE ALL ON public.push_subscriptions FROM anon,authenticated;
+ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY;
+CREATE TABLE public.notification_receipts (user_id uuid NOT NULL, event_key text NOT NULL, in_app_dismissed boolean NOT NULL DEFAULT false, push_sent_at timestamptz, push_claimed_at timestamptz, PRIMARY KEY(user_id,event_key));
+GRANT SELECT,INSERT,UPDATE ON public.notification_receipts TO authenticated;
+GRANT ALL ON public.notification_receipts TO service_role;
+ALTER TABLE public.notification_receipts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "own alert receipts" ON public.notification_receipts FOR ALL TO authenticated USING (public.is_team_member() AND user_id=auth.uid()) WITH CHECK (public.is_team_member() AND user_id=auth.uid());
+CREATE TABLE public.web_push_config (id boolean PRIMARY KEY DEFAULT true, public_key text NOT NULL, private_key_ciphertext text NOT NULL);
+GRANT ALL ON public.web_push_config TO service_role;
+REVOKE ALL ON public.web_push_config FROM anon,authenticated;
+ALTER TABLE public.web_push_config ENABLE ROW LEVEL SECURITY;
