@@ -1,0 +1,1 @@
+drop trigger if exists enforce_company_domain_before_insert on auth.users;

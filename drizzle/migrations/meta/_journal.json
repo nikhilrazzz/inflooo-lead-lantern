@@ -8,6 +8,13 @@
       "when": 1793274524846,
       "tag": "0000_saleup_core",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793275526069,
+      "tag": "0001_relax_domain_trigger",
+      "breakpoints": true
     }
   ]
 }

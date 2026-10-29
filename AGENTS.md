@@ -11,4 +11,4 @@
 
 ## Architecture rules
 - Leads are imported from the Google Sheet only via the `syncLeadsFromSheet` server function (dedupe on SaleUp Lead ID); never write sheet-parsing logic elsewhere — keeps imports idempotent.
-- Company-domain access is enforced in three places (auth.users trigger, `is_team_member()` RLS, `_authenticated` guard); keep all three in sync when changing allowed domains.
+- Company-domain access is enforced by `is_team_member()` RLS and the `_authenticated` guard (which signs non-company users out); no auth.users blocking trigger, since it breaks Google sign-in with a vendor error.
