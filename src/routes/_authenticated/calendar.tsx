@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   addDays, addMonths, addWeeks, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, isToday,
   startOfMonth, startOfWeek, subDays, subMonths, subWeeks,
@@ -10,6 +10,8 @@ import { LeadRow } from "@/components/lead-row";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { useGoogleCalendar } from "@/components/google-calendar-connection";
+import { googleEventOnDay } from "@/lib/google-calendar";
 
 export const Route = createFileRoute("/_authenticated/calendar")({
   head: () => ({
@@ -31,6 +33,7 @@ const key = (d: Date) => format(d, "yyyy-MM-dd");
 function CalendarPage() {
   const { data: leads = [] } = useLeads();
   const { data: reminders = [] } = useReminders();
+  const { events, setRange } = useGoogleCalendar();
   const [view, setView] = useState<View>("month");
   const [cursor, setCursor] = useState(() => new Date());
   const [selected, setSelected] = useState(() => new Date());
@@ -60,8 +63,13 @@ function CalendarPage() {
     if (view === "day") setSelected(next);
   };
 
+  const from = days[0]?.toISOString() ?? cursor.toISOString();
+  const to = addDays(days.at(-1) ?? cursor, 1).toISOString();
+  useEffect(() => { setRange(from, to); }, [from, to, setRange]);
+  const selectedEvents = events.filter(event => googleEventOnDay(event, key(selected)));
+
   const dayLeads = (byDate.get(key(selected)) ?? []).filter((l) => filter === "all" || (filter === "done" ? isFollowedUp(l) : !isFollowedUp(l)));
-  const title = view === "month" ? format(cursor, "MMMM yyyy") : view === "week" ? `${format(days[0]!, "d MMM")} – ${format(days[6]!, "d MMM yyyy")}` : format(cursor, "EEEE, d MMM yyyy");
+  const title = view === "month" ? format(cursor, "MMMM yyyy") : view === "week" ? `${format(days[0] ?? cursor, "d MMM")} – ${format(days[6] ?? cursor, "d MMM yyyy")}` : format(cursor, "EEEE, d MMM yyyy");
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
@@ -92,6 +100,7 @@ function CalendarPage() {
             const ls = byDate.get(key(d)) ?? [];
             const pending = ls.filter((l) => !isFollowedUp(l)).length;
             const calls = callsByDate.get(key(d)) ?? 0;
+            const googleEvents = events.filter(event => googleEventOnDay(event, key(d)));
             const active = isSameDay(d, selected);
             return (
               <button
@@ -114,6 +123,7 @@ function CalendarPage() {
                   </span>
                 )}
                 {calls > 0 && <span className="mt-0.5 hidden truncate text-[10px] font-medium text-warning sm:block">📞 {calls} call{calls > 1 ? "s" : ""}</span>}
+                {googleEvents.length > 0 && <span className="mt-1 max-w-full truncate text-[10px] font-medium text-success">{googleEvents.length} Google</span>}
               </button>
             );
           })}
@@ -121,6 +131,14 @@ function CalendarPage() {
       </section>
 
       <section className="space-y-3">
+        <div className="space-y-2 border-b pb-4">
+          <h2 className="text-sm font-bold text-success">My Google Calendar · {selectedEvents.length}</h2>
+          {selectedEvents.length === 0 && <p className="text-sm text-muted-foreground">No Google events for this day.</p>}
+          {selectedEvents.map(event => <div key={event.id} className="min-w-0 border-l-2 border-success py-1 pl-3">
+            <div className="break-words text-sm font-semibold">{event.url ? <a href={event.url} target="_blank" rel="noreferrer" className="hover:underline">{event.title}</a> : event.title}</div>
+            <p className="text-xs text-muted-foreground">{event.allDay ? 'All day' : `${format(new Date(event.start), 'h:mm a')} – ${format(new Date(event.end), 'h:mm a')}`}</p>
+          </div>)}
+        </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 className="text-lg font-bold">{format(selected, "EEEE, d MMM")}</h2>

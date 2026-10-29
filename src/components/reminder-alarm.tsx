@@ -54,10 +54,6 @@ export function ReminderAlarm({ onOpenLead }: { onOpenLead: (id: string) => void
     return () => clearInterval(t);
   }, [current?.id]);
 
-  useEffect(() => {
-    if (typeof Notification !== "undefined" && Notification.permission === "default") Notification.requestPermission();
-  }, []);
-
   if (!current) return null;
   const done = async () => {
     await supabase.from("reminders").update({ completed: true, completed_at: new Date().toISOString() }).eq("id", current.id);

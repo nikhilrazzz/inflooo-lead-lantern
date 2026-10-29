@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LeadPanel } from "@/components/lead-panel";
 import { ReminderAlarm } from "@/components/reminder-alarm";
+import { GoogleCalendarConnection } from "@/components/google-calendar-connection";
 
 type Ctx = { openLead: (id: string) => void; sync: () => Promise<void>; syncing: boolean };
 const ShellCtx = createContext<Ctx | null>(null);
@@ -151,11 +152,13 @@ export function AppShell() {
           </nav>
         </header>
         <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
-          <Outlet />
+          <GoogleCalendarConnection>
+            <Outlet />
+            <LeadPanel leadId={leadId} onClose={() => setLeadId(null)} />
+            <ReminderAlarm onOpenLead={setLeadId} />
+          </GoogleCalendarConnection>
         </main>
       </div>
-      <LeadPanel leadId={leadId} onClose={() => setLeadId(null)} />
-      <ReminderAlarm onOpenLead={setLeadId} />
     </ShellCtx.Provider>
   );
 }
