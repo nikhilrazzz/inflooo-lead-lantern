@@ -14,6 +14,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export const Route = createFileRoute("/_authenticated/reminders")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Call Reminders — SaleUp" },
       { name: "description", content: "Upcoming, overdue and completed follow-up calls." },
       { property: "og:title", content: "Call Reminders — SaleUp" },

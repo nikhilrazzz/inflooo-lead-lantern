@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { BellRing, CalendarDays, LayoutDashboard, LogOut, RefreshCw, TrendingUp } from "lucide-react";
+import { BellRing, CalendarDays, IndianRupee, LayoutDashboard, LogOut, RefreshCw, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { syncLeadsFromSheet } from "@/lib/sheet-sync.functions";
 import { useLastSync, useLiveUpdates, useMe } from "@/lib/data";
@@ -32,6 +32,7 @@ export const useShell = () => {
 const NAV = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { to: "/calendar", label: "Calendar", icon: CalendarDays },
+  { to: "/revenue", label: "Revenue", icon: IndianRupee },
   { to: "/reminders", label: "Reminders", icon: BellRing },
 ] as const;
 

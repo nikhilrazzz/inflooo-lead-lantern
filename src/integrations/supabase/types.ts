@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      brand_revenue: {
+        Row: {
+          brand_name: string
+          budget: number
+          created_at: string
+          id: string
+          payment_received: boolean
+          payout: number
+          profit: number | null
+        }
+        Insert: {
+          brand_name: string
+          budget?: number
+          created_at?: string
+          id?: string
+          payment_received?: boolean
+          payout?: number
+          profit?: number | null
+        }
+        Update: {
+          brand_name?: string
+          budget?: number
+          created_at?: string
+          id?: string
+          payment_received?: boolean
+          payout?: number
+          profit?: number | null
+        }
+        Relationships: []
+      }
       lead_activities: {
         Row: {
           action: string

@@ -11,6 +11,8 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Sign in — SaleUp" },
       { name: "description", content: "Sign in to SaleUp with your company Google account." },
       { property: "og:title", content: "Sign in — SaleUp" },
