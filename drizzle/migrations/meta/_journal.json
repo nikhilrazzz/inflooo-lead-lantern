@@ -22,6 +22,13 @@
       "when": 1793275671952,
       "tag": "0002_fix_makeitviral_domain",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793278742086,
+      "tag": "0003_brand_revenue",
+      "breakpoints": true
     }
   ]
 }
