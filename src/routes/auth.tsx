@@ -27,7 +27,7 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (denied) toast.error("Only @inflooo.com and @makeitviral.com accounts can access SaleUp.");
+    if (denied) toast.error("Only @inflooo.com and @makeitviral.ai accounts can access SaleUp.");
     if (window.location.hash.includes("error=")) {
       toast.error("Google sign-in didn't complete. Please try again with your company account.");
       history.replaceState(null, "", window.location.pathname);
@@ -37,7 +37,7 @@ function AuthPage() {
       if (isAllowedEmail(data.user.email)) navigate({ to: "/dashboard", replace: true });
       else {
         await supabase.auth.signOut();
-        toast.error("Only @inflooo.com and @makeitviral.com accounts can access SaleUp.");
+        toast.error("Only @inflooo.com and @makeitviral.ai accounts can access SaleUp.");
       }
     });
   }, [denied, navigate]);
@@ -52,7 +52,7 @@ function AuthPage() {
       setLoading(false);
       toast.error(
         /inflooo|makeitviral|Database error/i.test(result.error.message ?? "")
-          ? "Only @inflooo.com and @makeitviral.com accounts can access SaleUp."
+          ? "Only @inflooo.com and @makeitviral.ai accounts can access SaleUp."
           : result.error.message ?? "Sign-in failed",
       );
       return;
@@ -62,7 +62,7 @@ function AuthPage() {
     if (!isAllowedEmail(data.user?.email)) {
       await supabase.auth.signOut();
       setLoading(false);
-      toast.error("Only @inflooo.com and @makeitviral.com accounts can access SaleUp.");
+      toast.error("Only @inflooo.com and @makeitviral.ai accounts can access SaleUp.");
       return;
     }
     navigate({ to: "/dashboard", replace: true });
@@ -84,7 +84,7 @@ function AuthPage() {
         </Button>
         <p className="mt-6 flex items-start gap-2 text-xs text-muted-foreground">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-          Access is limited to @inflooo.com and @makeitviral.com team members.
+          Access is limited to @inflooo.com and @makeitviral.ai team members.
         </p>
       </div>
     </div>
