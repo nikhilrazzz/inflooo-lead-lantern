@@ -9,3 +9,9 @@
 - [x] Sync scheduled calls and reminder changes to that user's Google Calendar, preserving in-app alarms.
 - [x] Verify signed-in connection requirement, Google consent popup, mobile layout, and calendar rule tests.
 - [ ] Verify event sync and Google notification delivery after personal consent (waiting for the user to connect their Google account in SaleUp).
+
+# Optional calendar and alarm notifications
+- [ ] Remove required Google Calendar connection; move controls to Settings.
+- [ ] Preserve original calendar and upgrade existing alarms to corner pop-ups across pages.
+- [ ] Add notification preferences and supported closed-app push delivery.
+- [ ] Verify settings, dismissal, navigation, deduplication, and notification delivery.
