@@ -11,7 +11,7 @@ export const syncLeadsFromSheet = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { supabase, claims } = context;
     const email = String((claims as { email?: string }).email ?? "").toLowerCase();
-    if (!/@(inflooo\.com|makeitviral\.com)$/.test(email)) throw new Error("Not authorized");
+    if (!/@(inflooo\.com|makeitviral\.ai)$/.test(email)) throw new Error("Not authorized");
 
     const lovableKey = process.env["LOVABLE_API_KEY"];
     const sheetsKey = process.env["GOOGLE_SHEETS_API_KEY"];

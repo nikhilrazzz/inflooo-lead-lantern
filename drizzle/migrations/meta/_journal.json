@@ -15,6 +15,13 @@
       "when": 1793275526069,
       "tag": "0001_relax_domain_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793275671952,
+      "tag": "0002_fix_makeitviral_domain",
+      "breakpoints": true
     }
   ]
 }
