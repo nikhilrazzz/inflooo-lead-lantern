@@ -11,7 +11,7 @@ export interface AppUserOAuthAuthorizeParams {
   appUserId: string;
   clientAPIKey: string;
   returnUrl: string;
-  connectionAPIKey?: string;
+  connectionAPIKey?: string | undefined;
   credentialsConfiguration?: Record<string, unknown>;
 }
 
@@ -40,7 +40,7 @@ export async function exchangeAppUserOAuthCode(gatewayBaseUrl: string, code: str
   return { connectionAPIKey: body.api_key, connectorId: body.connector_id };
 }
 
-export async function callAsAppUser(params: { gatewayBaseUrl: string; connectionAPIKey: string; connectorId: string; path: string; init?: RequestInit; requiredScopes?: string[] }) {
+export async function callAsAppUser(params: { gatewayBaseUrl: string; connectionAPIKey: string; connectorId: string; path: string; init?: RequestInit | undefined; requiredScopes?: string[] }) {
   const headers = new Headers(params.init?.headers);
   headers.set('Authorization', `Bearer ${requireApiKey()}`);
   headers.set('X-Connection-Api-Key', params.connectionAPIKey);
