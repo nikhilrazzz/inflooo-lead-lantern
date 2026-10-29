@@ -30,7 +30,8 @@ const clean = (s: string | undefined) => (s ?? "").replace(/_/g, " ").trim() || 
 
 export function parseSheetRows(values: string[][]): ParsedLead[] {
   if (values.length < 2) return [];
-  const headers = values[0].map((h) => h.trim().toLowerCase());
+  const headerRow = values[0] ?? [];
+  const headers = headerRow.map((h) => h.trim().toLowerCase());
   const col = (name: string) => headers.findIndex((h) => h.includes(name));
   const idx = {
     date: col("created"),
@@ -55,7 +56,7 @@ export function parseSheetRows(values: string[][]): ParsedLead[] {
     if (seen.has(external_id)) continue;
     seen.add(external_id);
     const raw: Record<string, string> = {};
-    values[0].forEach((h, i) => { if (row[i]) raw[h] = row[i]; });
+    headerRow.forEach((h, i) => { const v = row[i]; if (v) raw[h] = v; });
     const deal = Number((get(idx.deal) ?? "").replace(/[^\d.]/g, ""));
     out.push({
       external_id,
