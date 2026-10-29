@@ -14,13 +14,247 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lead_activities: {
+        Row: {
+          action: string
+          created_at: string
+          detail: string | null
+          id: string
+          lead_id: string
+          user_id: string
+          user_name: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          lead_id: string
+          user_id?: string
+          user_name?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          lead_id?: string
+          user_id?: string
+          user_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_notes: {
+        Row: {
+          author_id: string
+          author_name: string | null
+          content: string
+          created_at: string
+          id: string
+          lead_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string
+          author_name?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          lead_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          lead_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_notes_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          brand_info: string | null
+          budget: string | null
+          created_at: string
+          deal_value: number | null
+          external_id: string
+          full_name: string
+          id: string
+          lead_date: string | null
+          lead_type: string | null
+          outreached: boolean
+          outreached_at: string | null
+          outreached_by: string | null
+          outreached_by_name: string | null
+          phone: string | null
+          raw: Json
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          brand_info?: string | null
+          budget?: string | null
+          created_at?: string
+          deal_value?: number | null
+          external_id: string
+          full_name?: string
+          id?: string
+          lead_date?: string | null
+          lead_type?: string | null
+          outreached?: boolean
+          outreached_at?: string | null
+          outreached_by?: string | null
+          outreached_by_name?: string | null
+          phone?: string | null
+          raw?: Json
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          brand_info?: string | null
+          budget?: string | null
+          created_at?: string
+          deal_value?: number | null
+          external_id?: string
+          full_name?: string
+          id?: string
+          lead_date?: string | null
+          lead_type?: string | null
+          outreached?: boolean
+          outreached_at?: string | null
+          outreached_by?: string | null
+          outreached_by_name?: string | null
+          phone?: string | null
+          raw?: Json
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      reminders: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          lead_id: string
+          note: string | null
+          remind_at: string
+          user_id: string
+          user_name: string | null
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          lead_id: string
+          note?: string | null
+          remind_at: string
+          user_id?: string
+          user_name?: string | null
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          lead_id?: string
+          note?: string | null
+          remind_at?: string
+          user_id?: string
+          user_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminders_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sync_runs: {
+        Row: {
+          id: string
+          imported: number
+          message: string | null
+          ok: boolean
+          ran_at: string
+          ran_by: string | null
+          total: number
+        }
+        Insert: {
+          id?: string
+          imported?: number
+          message?: string | null
+          ok: boolean
+          ran_at?: string
+          ran_by?: string | null
+          total?: number
+        }
+        Update: {
+          id?: string
+          imported?: number
+          message?: string | null
+          ok?: boolean
+          ran_at?: string
+          ran_by?: string | null
+          total?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_company_email: { Args: { _email: string }; Returns: boolean }
+      is_team_member: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
