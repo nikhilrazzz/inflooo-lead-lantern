@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { addMinutes, format } from "date-fns";
-import { BellRing, Phone } from "lucide-react";
+import { BellRing, Phone, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { logActivity, useMe, useReminders, type ReminderWithLead } from "@/lib/data";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { useNotificationPreferences, useAlertReceipts } from "@/lib/notification-data";
+import { reminderAlertKey, shouldAlert } from "@/lib/notifications";
 import { Button } from "@/components/ui/button";
 
 function beep(ctxRef: React.MutableRefObject<AudioContext | null>) {
@@ -33,62 +35,66 @@ export function ReminderAlarm({ onOpenLead }: { onOpenLead: (id: string) => void
   const [now, setNow] = useState(Date.now());
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const audio = useRef<AudioContext | null>(null);
+  const { data: prefs } = useNotificationPreferences();
+  const { data: receipts, isFetched: receiptsReady } = useAlertReceipts();
+  const notified = useRef(new Set<string>());
+  const [receivedAt, setReceivedAt] = useState(Date.now());
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 15_000);
     return () => clearInterval(t);
   }, []);
 
-  const due: ReminderWithLead[] = (reminders ?? []).filter(
-    (r) => !r.completed && r.user_id === me?.id && new Date(r.remind_at).getTime() <= now && !dismissed.has(r.id),
+  const dismissedKeys = new Set([...dismissed, ...(receipts ?? []).map(r => r.event_key)]);
+  const due: ReminderWithLead[] = prefs?.in_app_enabled === false || !receiptsReady ? [] : (reminders ?? []).filter(
+    r => !!me && shouldAlert(r, me.id, now, dismissedKeys),
   );
   const current = due[0];
 
   useEffect(() => {
     if (!current) return;
+    setReceivedAt(Date.now());
     beep(audio);
-    if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-      new Notification("SaleUp: time to call", { body: `${current.leads?.full_name ?? "Lead"} · ${format(new Date(current.remind_at), "h:mm a")}` });
+    const eventKey = reminderAlertKey(current);
+    if (!notified.current.has(eventKey) && !prefs?.push_enabled && typeof Notification !== "undefined" && Notification.permission === "granted") {
+      const notification = new Notification("SaleUp: time to call", { tag: eventKey, body: `${current.leads?.full_name ?? "Lead"} · ${format(new Date(current.remind_at), "h:mm a")}` });
+      notification.onclick = () => { window.focus(); onOpenLead(current.lead_id); notification.close(); };
+      notified.current.add(eventKey);
     }
     const t = setInterval(() => beep(audio), 8000);
     return () => clearInterval(t);
-  }, [current?.id]);
+  }, [current?.id, current?.remind_at]);
 
   if (!current) return null;
-  const done = async () => {
-    await supabase.from("reminders").update({ completed: true, completed_at: new Date().toISOString() }).eq("id", current.id);
-    await logActivity(current.lead_id, me?.name ?? "Teammate", "Completed call");
-    qc.invalidateQueries({ queryKey: ["reminders"] });
-  };
-  const snooze = async (mins: number) => {
-    await supabase.from("reminders").update({ remind_at: addMinutes(new Date(), mins).toISOString() }).eq("id", current.id);
-    qc.invalidateQueries({ queryKey: ["reminders"] });
-  };
-
-  return (
-    <Dialog open onOpenChange={(o) => !o && setDismissed((s) => new Set(s).add(current.id))}>
-      <DialogContent className="border-primary shadow-alarm sm:max-w-md">
-        <DialogHeader className="items-center text-center">
-          <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <BellRing className="h-8 w-8 animate-alarm" />
-          </div>
-          <DialogTitle className="text-2xl">Time to call {current.leads?.full_name || "your lead"}</DialogTitle>
-          <DialogDescription>
-            Scheduled for {format(new Date(current.remind_at), "EEE d MMM, h:mm a")}
-            {current.note ? ` — ${current.note}` : ""}
-          </DialogDescription>
-        </DialogHeader>
-        {current.leads?.phone && (
-          <Button asChild size="lg">
-            <a href={`tel:+${current.leads.phone.replace(/\D/g, "")}`}><Phone className="h-4 w-4" /> Call {current.leads.phone}</a>
-          </Button>
-        )}
-        <div className="grid grid-cols-3 gap-2">
-          <Button variant="outline" onClick={done}>Mark done</Button>
-          <Button variant="outline" onClick={() => snooze(10)}>Snooze 10m</Button>
-          <Button variant="outline" onClick={() => { onOpenLead(current.lead_id); setDismissed((s) => new Set(s).add(current.id)); }}>Open lead</Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
+  async function dismiss() {
+    if (!current || !me) return;
+    const eventKey = reminderAlertKey(current);
+    setDismissed(previous => new Set(previous).add(eventKey));
+    const { error } = await supabase.from('notification_receipts').upsert({ user_id: me.id, event_key: eventKey, in_app_dismissed: true }, { onConflict: 'user_id,event_key' });
+    if (error) toast.error('Alert dismissed for this session; could not save dismissal.');
+    qc.invalidateQueries({ queryKey: ['alert-receipts'] });
+  }
+  async function updateReminder(snooze: boolean) {
+    if (!current) return;
+    setBusy(true);
+    try {
+      const patch = snooze ? { remind_at: addMinutes(new Date(), 10).toISOString() } : { completed: true, completed_at: new Date().toISOString() };
+      const { error } = await supabase.from('reminders').update(patch).eq('id', current.id);
+      if (error) throw error;
+      if (!snooze) await logActivity(current.lead_id, me?.name ?? 'Teammate', 'Completed call');
+      await qc.invalidateQueries({ queryKey: ['reminders'] });
+    } catch { toast.error('Could not update this call. Please try again.'); }
+    finally { setBusy(false); }
+  }
+  return <aside role="alert" aria-label="Call reminder" className="fixed right-4 top-20 z-50 w-[calc(100%-2rem)] max-w-sm rounded-lg border border-primary bg-card p-4 shadow-alarm motion-safe:animate-in motion-safe:slide-in-from-right-5 motion-safe:fade-in">
+    <div className="flex items-start gap-3">
+      <BellRing className="mt-1 h-6 w-6 shrink-0 text-primary motion-safe:animate-alarm" />
+      <div className="min-w-0 flex-1"><h2 className="break-words font-bold">Time to call {current.leads?.full_name || 'your lead'}</h2><p className="mt-1 text-xs text-muted-foreground">Received {format(receivedAt, 'h:mm a')} · {due.length > 1 ? `${due.length} calls due` : 'Call due'}</p></div>
+      <Button size="icon" variant="ghost" aria-label="Dismiss call reminder" onClick={dismiss}><X className="h-4 w-4" /></Button>
+    </div>
+    <p className="mt-3 break-words text-sm text-muted-foreground">Scheduled {format(new Date(current.remind_at), 'EEE d MMM, h:mm a')}{current.note ? ` — ${current.note}` : ''}</p>
+    {current.leads?.phone && <Button asChild size="sm" variant="outline" className="mt-3 w-full"><a href={`tel:+${current.leads.phone.replace(/\D/g, '')}`}><Phone className="h-4 w-4" />Call {current.leads.phone}</a></Button>}
+    <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" onClick={() => updateReminder(false)} disabled={busy}>Mark done</Button><Button size="sm" variant="outline" onClick={() => updateReminder(true)} disabled={busy}>Snooze 10m</Button><Button size="sm" variant="ghost" onClick={() => { onOpenLead(current.lead_id); dismiss(); }}>Open lead</Button></div>
+  </aside>;
 }

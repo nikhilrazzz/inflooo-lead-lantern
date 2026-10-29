@@ -16,6 +16,7 @@ import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
 import { Route as AuthenticatedRevenueRouteImport } from './routes/_authenticated/revenue'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as ApiPublicJobsCallNotificationsRouteImport } from './routes/api/public/jobs/call-notifications'
 import { Route as ApiPublicOauthGoogleCalendarReturnRouteImport } from './routes/api/public/oauth/google-calendar/return'
 
@@ -53,6 +54,11 @@ const AuthenticatedRevenueRoute = AuthenticatedRevenueRouteImport.update({
   path: '/revenue',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiPublicJobsCallNotificationsRoute =
   ApiPublicJobsCallNotificationsRouteImport.update({
     id: '/api/public/jobs/call-notifications',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/revenue': typeof AuthenticatedRevenueRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/api/public/jobs/call-notifications': typeof ApiPublicJobsCallNotificationsRoute
   '/api/public/oauth/google-calendar/return': typeof ApiPublicOauthGoogleCalendarReturnRoute
 }
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/revenue': typeof AuthenticatedRevenueRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/api/public/jobs/call-notifications': typeof ApiPublicJobsCallNotificationsRoute
   '/api/public/oauth/google-calendar/return': typeof ApiPublicOauthGoogleCalendarReturnRoute
 }
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
   '/_authenticated/revenue': typeof AuthenticatedRevenueRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/api/public/jobs/call-notifications': typeof ApiPublicJobsCallNotificationsRoute
   '/api/public/oauth/google-calendar/return': typeof ApiPublicOauthGoogleCalendarReturnRoute
 }
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/reminders'
     | '/revenue'
+    | '/settings'
     | '/api/public/jobs/call-notifications'
     | '/api/public/oauth/google-calendar/return'
   fileRoutesByTo: FileRoutesByTo
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/reminders'
     | '/revenue'
+    | '/settings'
     | '/api/public/jobs/call-notifications'
     | '/api/public/oauth/google-calendar/return'
   id:
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/reminders'
     | '/_authenticated/revenue'
+    | '/_authenticated/settings'
     | '/api/public/jobs/call-notifications'
     | '/api/public/oauth/google-calendar/return'
   fileRoutesById: FileRoutesById
@@ -191,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRevenueRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/jobs/call-notifications': {
       id: '/api/public/jobs/call-notifications'
       path: '/api/public/jobs/call-notifications'
@@ -213,6 +232,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedRemindersRoute: typeof AuthenticatedRemindersRoute
   AuthenticatedRevenueRoute: typeof AuthenticatedRevenueRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -220,6 +240,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedRemindersRoute: AuthenticatedRemindersRoute,
   AuthenticatedRevenueRoute: AuthenticatedRevenueRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
