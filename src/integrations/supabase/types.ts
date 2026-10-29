@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_user_connections: {
+        Row: {
+          connection_key_ciphertext: string
+          connector_id: string
+          created_at: string
+          id: string
+          reconnect_required: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connection_key_ciphertext: string
+          connector_id: string
+          created_at?: string
+          id?: string
+          reconnect_required?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connection_key_ciphertext?: string
+          connector_id?: string
+          created_at?: string
+          id?: string
+          reconnect_required?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brand_revenue: {
         Row: {
           brand_name: string
@@ -41,6 +71,27 @@ export type Database = {
           payment_received?: boolean
           payout?: number
           profit?: number | null
+        }
+        Relationships: []
+      }
+      google_calendar_reminders: {
+        Row: {
+          event_id: string
+          fingerprint: string
+          reminder_id: string
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          fingerprint: string
+          reminder_id: string
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          fingerprint?: string
+          reminder_id?: string
+          user_id?: string
         }
         Relationships: []
       }
