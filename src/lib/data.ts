@@ -98,12 +98,12 @@ export function useMe() {
       const { data } = await supabase.auth.getUser();
       const u = data.user;
       if (!u) return null;
-      const meta = u.user_metadata ?? {};
+      const meta = (u.user_metadata ?? {}) as Record<string, string | undefined>;
       return {
         id: u.id,
         email: u.email ?? "",
-        name: (meta.full_name as string) || (meta.name as string) || (u.email ?? "").split("@")[0],
-        avatar: (meta.avatar_url as string) || (meta.picture as string) || null,
+        name: meta["full_name"] || meta["name"] || (u.email ?? "").split("@")[0],
+        avatar: meta["avatar_url"] || meta["picture"] || null,
       };
     },
   });
@@ -132,7 +132,7 @@ export function useLiveUpdates() {
 }
 
 export async function logActivity(leadId: string, userName: string, action: string, detail?: string) {
-  await supabase.from("lead_activities").insert({ lead_id: leadId, user_name: userName, action, detail });
+  await supabase.from("lead_activities").insert({ lead_id: leadId, user_name: userName, action, detail: detail ?? null });
 }
 
 export function isFollowedUp(l: Lead) {

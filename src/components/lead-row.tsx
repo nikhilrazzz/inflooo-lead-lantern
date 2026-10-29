@@ -14,7 +14,7 @@ export function LeadRow({ lead }: { lead: Lead }) {
 
   async function markOutreached(e: React.MouseEvent) {
     e.stopPropagation();
-    if (lead.outreached) return openLead(lead.id);
+    if (lead.outreached) { openLead(lead.id); return; }
     const { error } = await supabase
       .from("leads")
       .update({
@@ -25,7 +25,7 @@ export function LeadRow({ lead }: { lead: Lead }) {
         status: lead.status === "New Lead" ? "Contacted" : lead.status,
       })
       .eq("id", lead.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     await logActivity(lead.id, me?.name ?? "Teammate", "Marked outreached");
     toast.success(`${lead.full_name} marked as outreached`);
     qc.invalidateQueries({ queryKey: ["leads"] });

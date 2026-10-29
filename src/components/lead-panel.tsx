@@ -35,7 +35,7 @@ function LeadBody({ leadId }: { leadId: string }) {
 
   async function update(patch: Partial<typeof lead>, action: string, detail?: string) {
     const { error } = await supabase.from("leads").update({ ...patch, updated_at: new Date().toISOString() }).eq("id", lead.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     await logActivity(lead.id, userName, action, detail);
     qc.invalidateQueries({ queryKey: ["leads"] });
     qc.invalidateQueries({ queryKey: ["activities"] });
@@ -130,10 +130,10 @@ function ReminderSection({ leadId, leadName, userName }: { leadId: string; leadN
   const [note, setNote] = useState("");
 
   async function add() {
-    if (!when) return toast.error("Pick a date and time");
+    if (!when) { toast.error("Pick a date and time"); return; }
     const at = new Date(when);
     const { error } = await supabase.from("reminders").insert({ lead_id: leadId, remind_at: at.toISOString(), note: note || null, user_name: userName });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     await logActivity(leadId, userName, "Scheduled call", format(at, "d MMM, h:mm a"));
     setWhen(""); setNote("");
     toast.success(`Reminder set for ${format(at, "d MMM, h:mm a")}`);
@@ -176,7 +176,7 @@ function ReminderSection({ leadId, leadName, userName }: { leadId: string; leadN
   );
 }
 
-function NotesSection({ leadId, userName, myId }: { leadId: string; userName: string; myId?: string }) {
+function NotesSection({ leadId, userName, myId }: { leadId: string; userName: string; myId?: string | undefined }) {
   const qc = useQueryClient();
   const { data: notes } = useNotes(leadId);
   const [text, setText] = useState("");
@@ -186,7 +186,7 @@ function NotesSection({ leadId, userName, myId }: { leadId: string; userName: st
   async function add() {
     if (!text.trim()) return;
     const { error } = await supabase.from("lead_notes").insert({ lead_id: leadId, content: text.trim(), author_name: userName });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     await logActivity(leadId, userName, "Added note");
     setText(""); refresh();
     qc.invalidateQueries({ queryKey: ["activities"] });

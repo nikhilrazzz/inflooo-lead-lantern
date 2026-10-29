@@ -16,11 +16,11 @@ export function parseSheetDate(value: string | undefined): string | null {
   if (!value) return null;
   const v = value.trim();
   const iso = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
-  if (iso) return `${iso[1]}-${iso[2].padStart(2, "0")}-${iso[3].padStart(2, "0")}`;
+  if (iso) return `${iso[1]}-${iso[2]!.padStart(2, "0")}-${iso[3]!.padStart(2, "0")}`;
   const m = v.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})/);
   if (m) {
-    const year = m[3].length === 2 ? `20${m[3]}` : m[3];
-    return `${year}-${m[1].padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+    const year = m[3]!.length === 2 ? `20${m[3]}` : m[3];
+    return `${year}-${m[1]!.padStart(2, "0")}-${m[2]!.padStart(2, "0")}`;
   }
   const d = new Date(v);
   return isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
