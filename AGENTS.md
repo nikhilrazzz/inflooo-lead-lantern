@@ -15,3 +15,5 @@
 - Brand revenue is shared through company-scoped RLS; profit is a database-generated value with a matching client calculation for unsaved previews, so edits cannot leave profit stale.
 - Personal Calendar uses authenticated server functions with encrypted per-user connector keys; provider data and credentials never enter shared caches or browser storage, to isolate each team member's calendar.
 - Personal Google Calendar controls live in Settings and never gate SaleUp pages; optional sync reconciles the connected user's reminders with stable Google event IDs while open, preserving the original calendar for everyone.
+- The existing ReminderAlarm owns in-app call pop-ups across navigation; notification preferences and dismissal receipts are user-scoped, while server-only push subscriptions and an authenticated minute callback deliver due reminders when away, avoiding duplicate delivery with claimed receipts.
+- Web Push uses a messaging-only worker with no app caching; VAPID keys are generated from a stored signing seed and the private key is encrypted server-side, so browser notification access never exposes credentials.

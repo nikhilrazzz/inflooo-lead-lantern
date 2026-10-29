@@ -59,7 +59,7 @@ function SettingsPage() {
       await save({ data: { endpoint: subscription.endpoint, keys: { p256dh, auth } } });
       await qc.invalidateQueries({ queryKey: ['notification-preferences'] });
       toast.success('Notifications enabled');
-    } catch (error) { toast.error((error as Error).message); }
+    } catch { toast.error('Background notifications could not be enabled in this browser. In-app call alerts are still enabled.'); }
     finally { setBusy(false); }
   }
   async function disableNotifications() {

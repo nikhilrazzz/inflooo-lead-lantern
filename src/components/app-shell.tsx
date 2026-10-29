@@ -105,6 +105,7 @@ export function AppShell() {
               ))}
             </nav>
             <div className="ml-auto flex items-center gap-3">
+              <Button asChild size="icon" variant="ghost"><Link to="/settings" aria-label="Settings" title="Settings"><Settings className="h-4 w-4" /></Link></Button>
               <div className="hidden text-right text-xs text-muted-foreground lg:block">
                 {lastSync ? (
                   <>Synced {formatDistanceToNow(new Date(lastSync.ran_at), { addSuffix: true })}{!lastSync.ok && " · failed"}</>

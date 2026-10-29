@@ -58,8 +58,10 @@ export function ReminderAlarm({ onOpenLead }: { onOpenLead: (id: string) => void
     beep(audio);
     const eventKey = reminderAlertKey(current);
     if (!notified.current.has(eventKey) && !prefs?.push_enabled && typeof Notification !== "undefined" && Notification.permission === "granted") {
-      const notification = new Notification("SaleUp: time to call", { tag: eventKey, body: `${current.leads?.full_name ?? "Lead"} · ${format(new Date(current.remind_at), "h:mm a")}` });
-      notification.onclick = () => { window.focus(); onOpenLead(current.lead_id); notification.close(); };
+      try {
+        const notification = new Notification("SaleUp: time to call", { tag: eventKey, body: `${current.leads?.full_name ?? "Lead"} · ${format(new Date(current.remind_at), "h:mm a")}` });
+        notification.onclick = () => { window.focus(); onOpenLead(current.lead_id); notification.close(); };
+      } catch { /* In-app alerts remain available on browsers requiring a messaging worker. */ }
       notified.current.add(eventKey);
     }
     const t = setInterval(() => beep(audio), 8000);
@@ -87,7 +89,7 @@ export function ReminderAlarm({ onOpenLead }: { onOpenLead: (id: string) => void
     } catch { toast.error('Could not update this call. Please try again.'); }
     finally { setBusy(false); }
   }
-  return <aside role="alert" aria-label="Call reminder" className="fixed right-4 top-20 z-50 w-[calc(100%-2rem)] max-w-sm rounded-lg border border-primary bg-card p-4 shadow-alarm motion-safe:animate-in motion-safe:slide-in-from-right-5 motion-safe:fade-in">
+  return <aside role="alert" aria-label="Call reminder" className="fixed bottom-4 right-4 z-50 w-[calc(100%-2rem)] max-w-sm rounded-lg border border-primary bg-card p-4 shadow-alarm sm:bottom-auto sm:top-20 motion-safe:animate-in motion-safe:slide-in-from-right-5 motion-safe:fade-in">
     <div className="flex items-start gap-3">
       <BellRing className="mt-1 h-6 w-6 shrink-0 text-primary motion-safe:animate-alarm" />
       <div className="min-w-0 flex-1"><h2 className="break-words font-bold">Time to call {current.leads?.full_name || 'your lead'}</h2><p className="mt-1 text-xs text-muted-foreground">Received {format(receivedAt, 'h:mm a')} · {due.length > 1 ? `${due.length} calls due` : 'Call due'}</p></div>
